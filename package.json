@@ -1,0 +1,30 @@
+{
+  "name": "uplink-github-action",
+  "version": "0.0.0",
+  "description": "Uplink github action",
+  "license": "MIT",
+  "main": "index.js",
+  "private": true,
+  "scripts": {},
+  "dependencies": {
+    "uplink-nodejs": "^1.2.6"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "latest",
+    "@commitlint/config-conventional": "latest",
+    "@vercel/ncc": "^0.34.0",
+    "husky": "latest",
+    "lint-staged": "latest",
+    "prettier": "latest",
+    "nx": "14.5.10",
+    "@nrwl/cli": "14.5.10",
+    "@nrwl/workspace": "14.5.10",
+    "typescript": "~4.7.2"
+  },
+  "lint-staged": {
+    "**/*": "prettier -w -u"
+  },
+  "workspaces": [
+    "packages/**"
+  ]
+}
