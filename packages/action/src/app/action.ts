@@ -37,5 +37,5 @@ export const callFunction: CallFunctionType = async (inputs) => {
   );
   const project = await access.openProject();
 
-  exported_functions[function_type.toLowerCase()]({ project, inputs });
+  await exported_functions[function_type.toLowerCase()]({ project, inputs });
 };

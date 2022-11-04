@@ -3,9 +3,34 @@ import { callFunction, exported_functions } from '../src/app';
 
 import type { IInputParams } from '../src/app';
 
+const testif = (
+  name: string,
+  condition: boolean,
+  message: string = null,
+  fn?: jest.ProvidesCallback,
+  timeout?: number
+) =>
+  condition
+    ? test(name, fn, timeout)
+    : (() => {
+        if (message) {
+          console.log(`>> WARNING:: ${message}`);
+        }
+
+        test.skip(name, fn);
+      })();
+
 describe('Test Uplink Github action', () => {
   describe('Test input data', () => {
     let fake_data: IInputParams;
+
+    const expectCallFunction = (fn_name?: string) => {
+      if (fn_name) {
+        fake_data.function.value = fn_name;
+      }
+
+      return expect(callFunction(fake_data));
+    };
 
     beforeEach(() => {
       fake_data = {
@@ -25,20 +50,48 @@ describe('Test Uplink Github action', () => {
     });
 
     test('Test function type', async () => {
-      await expect(callFunction(fake_data)).rejects.toThrow(
+      await expectCallFunction().rejects.toThrow(
         `function '${fake_data.function.value}' is invalid.`
       );
     });
 
     test("Test 'api_key', 'passphrase', 'satellite_url'", async () => {
-      fake_data.function.value = Object.keys(exported_functions)[0];
-
-      const expect_result = await expect(callFunction(fake_data)).rejects;
+      const expect_result = await expectCallFunction(
+        Object.keys(exported_functions)[0]
+      ).rejects;
 
       expect_result.toThrow();
       expect_result.not.toThrow(
         `function '${fake_data.function.value}' is invalid.`
       );
     });
+
+    testif(
+      'Test valid input data',
+      process.env.UPLINK_API_KEY &&
+        process.env.UPLINK_PASSPHRASE &&
+        process.env.UPLINK_SATELLITE_URL
+        ? true
+        : false,
+      "For passing this test you should set 'UPLINK_API_KEY', 'UPLINK_PASSPHRASE' and 'UPLINK_SATELLITE_URL' environment variables",
+      async () => {
+        fake_data = {
+          api_key: {
+            value: process.env.UPLINK_API_KEY,
+          },
+          passphrase: {
+            value: process.env.UPLINK_PASSPHRASE,
+          },
+          satellite_url: {
+            value: process.env.UPLINK_SATELLITE_URL,
+          },
+          function: {},
+        };
+
+        await expectCallFunction(
+          Object.keys(exported_functions)[2]
+        ).resolves.not.toThrow();
+      }
+    );
   });
 });
