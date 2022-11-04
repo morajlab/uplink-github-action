@@ -1,13 +1,14 @@
 import { faker } from '@faker-js/faker';
-import { callFunction } from '../src/app';
+import { callFunction, exported_functions } from '../src/app';
 
 import type { IInputParams } from '../src/app';
 
 describe('Test Uplink Github action', () => {
   describe('Test input data', () => {
-    test('Test function type', async () => {
-      const function_type: string = faker.random.word();
-      const fake_data: IInputParams = {
+    let fake_data: IInputParams;
+
+    beforeEach(() => {
+      fake_data = {
         api_key: {
           value: faker.random.alphaNumeric(50),
         },
@@ -18,17 +19,26 @@ describe('Test Uplink Github action', () => {
           value: faker.internet.url(),
         },
         function: {
-          value: function_type,
+          value: faker.random.word(),
         },
       };
+    });
 
-      try {
-        await callFunction(fake_data);
-      } catch (error) {
-        expect(error).toEqual(
-          new Error(`function '${function_type}' is invalid.`)
-        );
-      }
+    test('Test function type', async () => {
+      await expect(callFunction(fake_data)).rejects.toThrow(
+        `function '${fake_data.function.value}' is invalid.`
+      );
+    });
+
+    test("Test 'api_key', 'passphrase', 'satellite_url'", async () => {
+      fake_data.function.value = Object.keys(exported_functions)[0];
+
+      const expect_result = await expect(callFunction(fake_data)).rejects;
+
+      expect_result.toThrow();
+      expect_result.not.toThrow(
+        `function '${fake_data.function.value}' is invalid.`
+      );
     });
   });
 });

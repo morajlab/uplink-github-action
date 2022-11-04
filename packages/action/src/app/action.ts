@@ -15,7 +15,7 @@ const listBuckets = async ({ project }: IFunctionParams) => {
 };
 const listFiles = async ({ project }: IFunctionParams) => {};
 
-const exported_functions: IExportedFunctions = {
+export const exported_functions: IExportedFunctions = {
   upload,
   download,
   list_buckets: listBuckets,
