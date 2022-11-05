@@ -1,4 +1,4 @@
-name: Test action
+name: Build and Test action
 
 on: ['push']
 
@@ -13,6 +13,8 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+      - run: npm i
+      - run: npx ncc build packages/action/src/main.ts -o dist
       - uses: ./
         id: uplink_action
         with:
