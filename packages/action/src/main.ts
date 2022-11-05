@@ -1,4 +1,4 @@
-import { getInput, setFailed } from '@actions/core';
+import * as action from '@actions/core';
 import { callFunction } from './app';
 
 import { IInputParams } from './app';
@@ -33,12 +33,12 @@ const inputs: IInputParams = {
 async function run() {
   try {
     for (const input in inputs) {
-      inputs[input].value = getInput(input, inputs[input].options);
+      inputs[input].value = action.getInput(input, inputs[input].options);
     }
 
-    callFunction(inputs);
+    callFunction(inputs, action);
   } catch ({ message }) {
-    setFailed(message);
+    action.setFailed(message);
   }
 }
 

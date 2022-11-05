@@ -6,12 +6,17 @@ import type {
   CallFunctionType,
 } from './action.types';
 
+// const debug = (content: any) => {
+//   console.log('>> DEBUG:: ', content);
+// };
+
 const upload = async ({ project }: IFunctionParams) => {};
 const download = async ({ project }: IFunctionParams) => {};
-const listBuckets = async ({ project }: IFunctionParams) => {
+const listBuckets = async ({ project, action }: IFunctionParams) => {
   const bucket_list = await project.listBuckets(new ListBucketsOptions());
 
-  console.log(bucket_list);
+  // debug(bucket_list);
+  action.setOutput('output', bucket_list);
 };
 const listFiles = async ({ project }: IFunctionParams) => {};
 
@@ -22,7 +27,7 @@ export const exported_functions: IExportedFunctions = {
   list_files: listFiles,
 };
 
-export const callFunction: CallFunctionType = async (inputs) => {
+export const callFunction: CallFunctionType = async (inputs, action) => {
   const function_type = inputs.function.value;
 
   if (!Object.keys(exported_functions).includes(function_type.toLowerCase())) {
@@ -37,5 +42,9 @@ export const callFunction: CallFunctionType = async (inputs) => {
   );
   const project = await access.openProject();
 
-  await exported_functions[function_type.toLowerCase()]({ project, inputs });
+  await exported_functions[function_type.toLowerCase()]({
+    project,
+    inputs,
+    action,
+  });
 };

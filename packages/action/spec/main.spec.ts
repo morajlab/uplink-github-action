@@ -1,7 +1,13 @@
 import { faker } from '@faker-js/faker';
 import { callFunction, exported_functions } from '../src/app';
 
-import type { IInputParams } from '../src/app';
+import type { IInputParams, IActionObject } from '../src/app';
+
+const action: IActionObject = {
+  setOutput(name, value) {
+    console.log(`${name}: ${value}`);
+  },
+};
 
 const testif = (
   name: string,
@@ -29,7 +35,7 @@ describe('Test Uplink Github action', () => {
         fake_data.function.value = fn_name;
       }
 
-      return expect(callFunction(fake_data));
+      return expect(callFunction(fake_data, action));
     };
 
     beforeEach(() => {

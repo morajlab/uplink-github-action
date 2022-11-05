@@ -1,5 +1,9 @@
 import type { ProjectResultStruct } from 'uplink-nodejs/dist/project';
-import type { InputOptions } from '@actions/core';
+import type { InputOptions, setOutput } from '@actions/core';
+
+export interface IActionObject {
+  setOutput: typeof setOutput;
+}
 
 export interface IInputParam {
   value?: string;
@@ -14,6 +18,7 @@ export interface IInputParams {
 
 export interface IFunctionParams {
   project: ProjectResultStruct;
+  action: IActionObject;
   inputs?: IInputParams;
 }
 
@@ -21,4 +26,7 @@ export interface IExportedFunctions {
   [key: string]: (params: IFunctionParams) => void;
 }
 
-export type CallFunctionType = (param: IInputParams) => void;
+export type CallFunctionType = (
+  param: IInputParams,
+  action: IActionObject
+) => void;

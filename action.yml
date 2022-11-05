@@ -1,13 +1,21 @@
-name: 'Wait'
-description: 'Wait a designated number of milliseconds'
+name: 'Uplink'
+description: 'Decentralized cloud object storage that is affordable, easy to use, private, and secure'
 inputs:
-  milliseconds: # id of input
-    description: 'number of milliseconds to wait'
+  satellite_url:
+    description: 'Satellite URL'
     required: true
-    default: '1000'
+  api_key:
+    description: 'API key'
+    required: true
+  passphrase:
+    description: 'Passphrase'
+    required: true
+  function:
+    description: 'Function type'
+    required: true
 outputs:
-  time: # output will be available to future steps
-    description: 'The current time after waiting'
+  output:
+    description: 'action output'
 runs:
   using: 'node16'
   main: 'dist/index.js'
