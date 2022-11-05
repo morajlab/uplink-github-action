@@ -4144,6 +4144,10 @@ const {
 } = tslib;
 
 
+// EXTERNAL MODULE: external "fs"
+var external_fs_ = __nccwpck_require__(147);
+// EXTERNAL MODULE: external "path"
+var external_path_ = __nccwpck_require__(17);
 // EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
 var core = __nccwpck_require__(186);
 // EXTERNAL MODULE: ./node_modules/uplink-nodejs/dist/uplink.js
@@ -4191,6 +4195,8 @@ const callFunction = (inputs, action) => __awaiter(void 0, void 0, void 0, funct
 
 
 
+
+
 const inputs = {
     satellite_url: {
         options: {
@@ -4217,9 +4223,29 @@ const inputs = {
         },
     },
 };
+const setLDEnVariable = () => {
+    let error_msg = '';
+    const sharedLibPaths = [
+        ['node_modules', 'uplink-nodejs', 'libuplinkcv1.2.4.so'],
+        ['dist', 'libuplinkcv1.2.4.so'],
+    ];
+    for (const path of sharedLibPaths) {
+        try {
+            (0,external_fs_.accessSync)((0,external_path_.join)(...path), external_fs_.constants.R_OK);
+            // TODO: Append 'LD_LIBRARY_PATH' value
+            core.exportVariable('LD_LIBRARY_PATH', (0,external_path_.dirname)((0,external_path_.join)(...path)));
+            return;
+        }
+        catch ({ message }) {
+            error_msg += message;
+        }
+    }
+    throw new Error(error_msg);
+};
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            setLDEnVariable();
             for (const input in inputs) {
                 inputs[input].value = core.getInput(input, inputs[input].options);
             }
