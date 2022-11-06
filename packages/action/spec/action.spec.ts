@@ -1,5 +1,6 @@
-import { faker } from '@faker-js/faker';
 import * as chalk from 'chalk';
+import { faker } from '@faker-js/faker';
+import { resolve } from 'path';
 import { callFunction, exported_functions } from '../src/app';
 
 import type { IUplinkEnVars } from './action.types';
@@ -11,6 +12,7 @@ const UPLINK_ENVARS: IUplinkEnVars = {
   SATELLITE_URL: 'SATELLITE_URL',
 };
 
+// TODO: Add silent option
 const action: IActionObject = {
   setOutput(name, value) {
     console.log(`${name}: ${value}`);
@@ -49,7 +51,7 @@ const testif = (
         test.skip(name, fn);
       })();
 
-jest.setTimeout(10000);
+jest.setTimeout(20000);
 
 describe('Test Uplink Github action', () => {
   describe('Test input data', () => {
@@ -156,7 +158,14 @@ describe('Test Uplink Github action', () => {
         /^Input item \'dest\' is required !$/
       );
 
-      inputs.src = { value: '' };
-    }
+      inputs.src = { value: resolve(__dirname, 'action.types.ts') };
+
+      await expect(callFunction({ inputs, action })).rejects.toThrow();
+
+      inputs.bucket = { value: 'beta' };
+
+      await expect(callFunction({ inputs, action })).resolves.not.toThrow();
+    },
+    100000
   );
 });

@@ -1,3 +1,5 @@
+import { normalize, basename, join } from 'path';
+import { Uplink, ListBucketsOptions, UploadOptions } from 'uplink-nodejs';
 import {
   openSync,
   statSync,
@@ -6,13 +8,6 @@ import {
   accessSync,
   constants,
 } from 'fs';
-import {
-  Uplink,
-  ListBucketsOptions,
-  UploadOptions,
-  CustomMetadataEntry,
-  CustomMetadata,
-} from 'uplink-nodejs';
 
 import type {
   IExportedFunctions,
@@ -21,11 +16,26 @@ import type {
   ListBucketsFunction,
   ListFilesFunction,
   CallFunction,
+  NormalizePathFunction,
 } from './action.types';
 
 // const debug = (content: any) => {
 //   console.log('>> DEBUG:: ', content);
 // };
+
+export const normalizePath: NormalizePathFunction = (path) => {
+  const bad_paths: string[] = ['.', './', '/'];
+  let new_path = normalize(path);
+
+  // TODO: Complete function
+  for (const p of bad_paths) {
+    if (new_path === p) {
+      return '';
+    }
+  }
+
+  return new_path;
+};
 
 const upload: UploadFunction = async ({ project, action, inputs }) => {
   const { dest, bucket, src } = inputs;
@@ -38,6 +48,20 @@ const upload: UploadFunction = async ({ project, action, inputs }) => {
 
   accessSync(src.value, constants.R_OK);
 
+  let _dest: string = basename(src.value);
+
+  if (dest?.value && dest?.value.trim().length > 0) {
+    dest.value = normalizePath(dest.value);
+
+    if (dest.value.length > 0) {
+      if (dest.value.endsWith('/')) {
+        _dest = join(dest.value, _dest);
+      } else {
+        _dest = dest.value;
+      }
+    }
+  }
+
   const BUFFER_SIZE: number = 80000;
   const options = new UploadOptions();
 
@@ -45,7 +69,7 @@ const upload: UploadFunction = async ({ project, action, inputs }) => {
 
   const upload_object = await project.uploadObject(
     bucket.value,
-    dest.value,
+    _dest,
     options
   );
   let loop: boolean = true;
@@ -99,26 +123,6 @@ const upload: UploadFunction = async ({ project, action, inputs }) => {
     }
   }
 
-  const customMetadataEntry1 = new CustomMetadataEntry();
-  const customMetadataEntry2 = new CustomMetadataEntry();
-
-  customMetadataEntry1.key = 'testing';
-  customMetadataEntry1.key_length = customMetadataEntry1.key.length;
-  customMetadataEntry1.value = 'testing1';
-  customMetadataEntry1.value_length = customMetadataEntry1.value.length;
-
-  customMetadataEntry2.key = 'value';
-  customMetadataEntry2.key_length = customMetadataEntry2.key.length;
-  customMetadataEntry2.value = 'value1';
-  customMetadataEntry2.value_length = customMetadataEntry2.value.length;
-
-  const customMetadata = new CustomMetadata();
-  const customMetadataEntryArray = [customMetadataEntry1, customMetadataEntry2];
-
-  customMetadata.count = customMetadataEntryArray.length;
-  customMetadata.entries = customMetadataEntryArray;
-
-  await upload_object.setCustomMetadata(customMetadata);
   await upload_object.commit();
   const info_object = await upload_object.info();
 
@@ -164,4 +168,6 @@ export const callFunction: CallFunction = async ({ inputs, action }) => {
     inputs,
     action,
   } as any);
+
+  await project.close();
 };

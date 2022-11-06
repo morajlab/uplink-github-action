@@ -6,6 +6,8 @@ export interface IActionObject {
   info: typeof info;
 }
 
+export type NormalizePathFunction = (path: string) => string;
+
 export interface IInputParamType {
   value?: string;
   options?: InputOptions;
