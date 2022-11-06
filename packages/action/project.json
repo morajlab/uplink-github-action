@@ -5,39 +5,11 @@
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nrwl/webpack:webpack",
-      "outputs": ["{options.outputPath}"],
+      "executor": "nx:run-commands",
       "options": {
-        "target": "node",
-        "compiler": "tsc",
-        "outputPath": "dist/packages/action",
-        "main": "packages/action/src/main.ts",
-        "tsConfig": "packages/action/tsconfig.app.json",
-        "assets": ["packages/action/src/assets"]
-      },
-      "configurations": {
-        "production": {
-          "optimization": true,
-          "extractLicenses": true,
-          "inspect": false,
-          "fileReplacements": [
-            {
-              "replace": "packages/action/src/environments/environment.ts",
-              "with": "packages/action/src/environments/environment.prod.ts"
-            }
-          ]
-        }
-      }
-    },
-    "serve": {
-      "executor": "@nrwl/js:node",
-      "options": {
-        "buildTarget": "action:build"
-      },
-      "configurations": {
-        "production": {
-          "buildTarget": "action:build:production"
-        }
+        "commands": [
+          "npx ncc build packages/action/src/main.ts -o dist/packages/action -m -s --license license.txt"
+        ]
       }
     },
     "lint": {

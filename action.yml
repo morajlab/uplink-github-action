@@ -18,4 +18,4 @@ outputs:
     description: 'action output'
 runs:
   using: 'node16'
-  main: 'dist/index.js'
+  main: 'dist/packages/action/index.js'
