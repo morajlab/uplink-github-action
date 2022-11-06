@@ -13,6 +13,15 @@ inputs:
   function:
     description: 'Function type'
     required: true
+  bucket:
+    description: 'Bucket name'
+    required: false
+  dest:
+    description: 'Destination path'
+    required: false
+  src:
+    description: 'Source path'
+    required: false
 outputs:
   output:
     description: 'action output'

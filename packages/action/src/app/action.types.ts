@@ -1,8 +1,9 @@
 import type { ProjectResultStruct } from 'uplink-nodejs/dist/project';
-import type { InputOptions, setOutput } from '@actions/core';
+import type { InputOptions, setOutput, info } from '@actions/core';
 
 export interface IActionObject {
   setOutput: typeof setOutput;
+  info: typeof info;
 }
 
 export interface IInputParam {
@@ -14,6 +15,9 @@ export interface IInputParams {
   satellite_url: IInputParam;
   api_key: IInputParam;
   passphrase: IInputParam;
+  bucket?: string;
+  dest?: string;
+  src?: string;
 }
 
 export interface IFunctionParams {
