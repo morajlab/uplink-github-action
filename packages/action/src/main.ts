@@ -1,11 +1,11 @@
+import * as action from '@actions/core';
 import { accessSync, constants } from 'fs';
 import { join, dirname } from 'path';
-import * as action from '@actions/core';
 import { callFunction } from './app';
 
-import { IInputParams } from './app';
+import type { InputParams } from './app';
 
-const inputs: IInputParams = {
+const inputs: InputParams = {
   satellite_url: {
     options: {
       required: true,
@@ -27,6 +27,24 @@ const inputs: IInputParams = {
   function: {
     options: {
       required: true,
+      trimWhitespace: true,
+    },
+  },
+  bucket: {
+    options: {
+      required: false,
+      trimWhitespace: true,
+    },
+  },
+  dest: {
+    options: {
+      required: false,
+      trimWhitespace: true,
+    },
+  },
+  src: {
+    options: {
+      required: false,
       trimWhitespace: true,
     },
   },
@@ -62,7 +80,7 @@ async function run() {
       inputs[input].value = action.getInput(input, inputs[input].options);
     }
 
-    callFunction(inputs, action);
+    await callFunction({ inputs, action });
   } catch ({ message }) {
     action.setFailed(message);
   }

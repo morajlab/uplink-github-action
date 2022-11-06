@@ -16,38 +16,45 @@ import {
 
 import type {
   IExportedFunctions,
-  IFunctionParams,
-  CallFunctionType,
+  UploadFunction,
+  DownloadFunction,
+  ListBucketsFunction,
+  ListFilesFunction,
+  CallFunction,
 } from './action.types';
 
 // const debug = (content: any) => {
 //   console.log('>> DEBUG:: ', content);
 // };
 
-const upload = async ({ project, action, inputs }: IFunctionParams) => {
+const upload: UploadFunction = async ({ project, action, inputs }) => {
   const { dest, bucket, src } = inputs;
 
-  for (const [key, value] of Object.entries({ dest, bucket, src })) {
-    if (!value || value.trim().length === 0) {
-      throw new Error(`Input item ${key} is required !`);
+  for (const [key, input] of Object.entries({ bucket, src })) {
+    if (!input || !input?.value || input?.value.trim().length === 0) {
+      throw new Error(`Input item '${key}' is required !`);
     }
   }
 
-  accessSync(src, constants.R_OK);
+  accessSync(src.value, constants.R_OK);
 
   const BUFFER_SIZE: number = 80000;
   const options = new UploadOptions();
 
   options.expires = 0;
 
-  const upload_object = await project.uploadObject(bucket, dest, options);
+  const upload_object = await project.uploadObject(
+    bucket.value,
+    dest.value,
+    options
+  );
   let loop: boolean = true;
   let bytesRead: number = 0;
   let buffer = Buffer.alloc(BUFFER_SIZE);
-  let fileHandle = openSync(src, 'rs');
+  let fileHandle = openSync(src.value, 'rs');
   const size = {
     actuallyWritten: 0,
-    file: statSync(src).size,
+    file: statSync(src.value).size,
     toWrite: 0,
     totalWritten: 0,
   };
@@ -121,14 +128,14 @@ const upload = async ({ project, action, inputs }: IFunctionParams) => {
 
   closeSync(fileHandle);
 };
-const download = async ({ project }: IFunctionParams) => {};
-const listBuckets = async ({ project, action }: IFunctionParams) => {
+const download: DownloadFunction = async ({ project }) => {};
+const listBuckets: ListBucketsFunction = async ({ project, action }) => {
   const bucket_list = await project.listBuckets(new ListBucketsOptions());
 
   // debug(bucket_list);
   action.setOutput('output', bucket_list);
 };
-const listFiles = async ({ project }: IFunctionParams) => {};
+const listFiles: ListFilesFunction = async ({ project }) => {};
 
 export const exported_functions: IExportedFunctions = {
   upload,
@@ -137,7 +144,7 @@ export const exported_functions: IExportedFunctions = {
   list_files: listFiles,
 };
 
-export const callFunction: CallFunctionType = async (inputs, action) => {
+export const callFunction: CallFunction = async ({ inputs, action }) => {
   const function_type = inputs.function.value;
 
   if (!Object.keys(exported_functions).includes(function_type.toLowerCase())) {
@@ -156,5 +163,5 @@ export const callFunction: CallFunctionType = async (inputs, action) => {
     project,
     inputs,
     action,
-  });
+  } as any);
 };
