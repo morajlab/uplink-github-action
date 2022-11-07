@@ -3,7 +3,7 @@ import { accessSync, constants } from 'fs';
 import { join, dirname } from 'path';
 import { callFunction } from './app';
 
-import type { InputParams } from './app';
+import type { InputParams } from './app/shared.types';
 
 const inputs: InputParams = {
   satellite_url: {

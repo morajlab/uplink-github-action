@@ -1,10 +1,10 @@
 import * as chalk from 'chalk';
 import { faker } from '@faker-js/faker';
 import { resolve } from 'path';
-import { callFunction, exported_functions } from '../src/app';
+import { callFunction, EXPORTED_FUNCTIONS } from '../src/app';
 
 import type { IUplinkEnVars } from './action.types';
-import type { InputParams, IActionObject } from '../src/app';
+import type { InputParams, IActionObject } from '../src/app/shared.types';
 
 const UPLINK_ENVARS: IUplinkEnVars = {
   API_KEY: 'API_KEY',
@@ -90,7 +90,7 @@ describe('Test Uplink Github action', () => {
 
     test("Test 'api_key', 'passphrase', 'satellite_url'", async () => {
       const expect_result = await expectCallFunction(
-        Object.keys(exported_functions)[0]
+        Object.keys(EXPORTED_FUNCTIONS)[0]
       ).rejects;
 
       expect_result.toThrow();
@@ -118,7 +118,7 @@ describe('Test Uplink Github action', () => {
         };
 
         await expectCallFunction(
-          Object.keys(exported_functions)[2]
+          Object.keys(EXPORTED_FUNCTIONS)[2]
         ).resolves.not.toThrow();
       }
     );
