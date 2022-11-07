@@ -18,7 +18,7 @@ export interface IUploadInputParams {
   src: IInputParamType;
   dest?: IInputParamType;
 }
-export interface IDownloadInputParams {}
+export interface IDownloadInputParams extends IUploadInputParams {}
 export interface IListBucketsInputParams {}
 export interface IListFilesInputParams {}
 
