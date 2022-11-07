@@ -1,19 +1,7 @@
 import { Uplink } from 'uplink-nodejs';
-
-import { upload } from './functions/upload';
-import { download } from './functions/download';
-import { listBuckets } from './functions/listBuckets';
-import { listFiles } from './functions/listFiles';
+import { EXPORTED_FUNCTIONS } from '../functions';
 
 import type { CallFunction } from './action.types';
-import type { IExportedFunctions } from './shared.types';
-
-export const EXPORTED_FUNCTIONS: IExportedFunctions = {
-  upload,
-  download,
-  list_buckets: listBuckets,
-  list_files: listFiles,
-};
 
 export const callFunction: CallFunction = async ({ inputs, action }) => {
   const function_type = inputs.function.value;

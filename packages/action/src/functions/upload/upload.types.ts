@@ -1,4 +1,4 @@
-import type { IInputParamType, ExportedFunctionType } from '../shared.types';
+import type { IInputParamType, ExportedFunctionType } from '../../types';
 
 export interface IUploadInputParams {
   bucket: IInputParamType;

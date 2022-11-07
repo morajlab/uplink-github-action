@@ -1,5 +1,5 @@
-import type { IUploadInputParams } from './upload.types';
-import type { ExportedFunctionType } from '../shared.types';
+import type { IUploadInputParams } from '../upload';
+import type { ExportedFunctionType } from '../../types';
 
 export interface IDownloadInputParams extends IUploadInputParams {}
 

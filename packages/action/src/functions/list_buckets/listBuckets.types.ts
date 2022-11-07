@@ -1,4 +1,4 @@
-import type { ExportedFunctionType } from '../shared.types';
+import type { ExportedFunctionType } from '../../types';
 
 export interface IListBucketsInputParams {}
 

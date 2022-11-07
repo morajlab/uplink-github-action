@@ -1,6 +1,6 @@
 import { openSync, writeSync, closeSync } from 'fs';
 import { DownloadOptions } from 'uplink-nodejs';
-import { BUFFER_SIZE } from '../constants';
+import { BUFFER_SIZE } from '../../app/constants';
 
 import type { DownloadFunction } from './download.types';
 

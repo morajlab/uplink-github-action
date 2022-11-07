@@ -1,10 +1,12 @@
 import * as chalk from 'chalk';
 import { faker } from '@faker-js/faker';
 import { resolve } from 'path';
-import { callFunction, EXPORTED_FUNCTIONS } from '../src/app';
+import { callFunction } from '../src/app';
+import { EXPORTED_FUNCTIONS } from '../src/functions';
 
+import type { InputParams } from '../src/app';
 import type { IUplinkEnVars } from './action.types';
-import type { InputParams, IActionObject } from '../src/app/shared.types';
+import type { IActionObject } from '../src/types';
 
 const UPLINK_ENVARS: IUplinkEnVars = {
   API_KEY: 'API_KEY',

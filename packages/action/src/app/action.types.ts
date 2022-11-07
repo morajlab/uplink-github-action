@@ -1,4 +1,7 @@
-import type { InputParams, IActionObject } from './shared.types';
+import type { IActionObject, ISharedInputParams } from '../types';
+import type { ExportedFunctionsParams } from '../functions';
+
+export type InputParams = ISharedInputParams & ExportedFunctionsParams;
 
 export interface ICallFunctionParams {
   inputs: InputParams;

@@ -1,7 +1,7 @@
 import { basename, join } from 'path';
 import { UploadOptions } from 'uplink-nodejs';
-import { normalizePath } from '../helpers';
-import { BUFFER_SIZE } from '../constants';
+import { normalizePath } from '../../app/helpers';
+import { BUFFER_SIZE } from '../../app/constants';
 import {
   accessSync,
   openSync,
